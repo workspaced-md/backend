@@ -1,14 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Renderer</title>
-    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
-</head>
-<body>
-    <textarea id="markdown" rows="10" cols="50"># Hello, Markdown!</textarea>
-    <button hx-post="/render" hx-include="#markdown" hx-target="#preview">Render</button>
-    <div id="preview"></div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Markdown File</title>
+  </head>
+  <body>
+    <h1>Upload</h1>
+    <form
+      action="http://localhost:8080/upload"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      <input type="file" name="markdownFile" accept=".md" required />
+      <button type="submit">Upload</button>
+    </form>
+  </body>
 </html>
+

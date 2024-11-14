@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Renderer</title>
+    <script src="https://unpkg.com/htmx.org@1.6.1"></script>
+</head>
+<body>
+    <textarea id="markdown" rows="10" cols="50"># Hello, Markdown!</textarea>
+    <button hx-post="/render" hx-include="#markdown" hx-target="#preview">Render</button>
+    <div id="preview"></div>
+</body>
+</html>

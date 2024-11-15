@@ -1,8 +1,13 @@
 # TODO
 
-- [ ] form to upload markdown files and store them on the server
-- [ ] add CSS styling to make the rendered markdown look nicer
+- [ ] style rendered markdown
+- [ ] users
+    - [ ] directory ownership for users
+    - [ ] drop down menu to select a dir for which a user has access
 
+# IN PROGRESS
+
+- [ ] form to upload markdown files and store them on the server
 
 # DONE
 

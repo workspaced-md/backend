@@ -7,60 +7,55 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/labstack/echo/v4"
 )
 
-func HandleUpload(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusBadRequest)
-		return
+func HandleUpload(c echo.Context) error {
+	if c.Request().Method != http.MethodPost {
+		return c.String(http.StatusBadRequest, "Invalid request method")
 	}
 
 	// parse multipart form
-	err := r.ParseMultipartForm(10 << 20) // limit file size to 10MB
+	err := c.Request().ParseMultipartForm(10 << 20) // limit file size to 10MB
 	if err != nil {
-		http.Error(w, "Failed to parse form", http.StatusBadRequest)
 		log.Println(err)
-		return
+		return c.String(http.StatusBadRequest, "Failed to parse form")
 	}
 
 	// retrieve file from the form
-	file, header, err := r.FormFile("markdownFile")
+	file, header, err := c.Request().FormFile("markdownFile")
 	if err != nil {
-		http.Error(w, "Failed to get file from form", http.StatusBadRequest)
-		return
+		return c.String(http.StatusBadRequest, "Failed to get file from form")
 	}
 	defer file.Close()
 
 	// read target directory from the form
-	targetDir := r.FormValue("targetDir")
+	targetDir := c.FormValue("targetDir")
 	if targetDir == "" {
-		http.Error(w, "Target directory not provided", http.StatusBadRequest)
-		return
+		return c.String(http.StatusBadRequest, "Target directory not provided")
 	}
 
 	// get root directory from .env
 	rootDir := os.Getenv("ROOT_DIR")
 	if rootDir == "" {
-		http.Error(w, "Root directory not configured in env", http.StatusInternalServerError)
-		return
+		return c.String(http.StatusInternalServerError, "Root directory not configured in env")
 	}
 
 	// create destination file path
 	dstPath := filepath.Join(rootDir, targetDir, header.Filename)
 	dstFile, err := os.Create(dstPath)
 	if err != nil {
-		http.Error(w, "Failer to create file", http.StatusInternalServerError)
 		log.Println(err)
-		return
+		return c.String(http.StatusInternalServerError, "Failed to create file")
 	}
 	defer dstFile.Close()
 
 	// copy uploaded file to the destination
 	_, err = io.Copy(dstFile, file)
 	if err != nil {
-		http.Error(w, "Failed to save file", http.StatusInternalServerError)
-		return
+		return c.String(http.StatusInternalServerError, "Failed to save file")
 	}
 
-	fmt.Fprintf(w, "%s uploaded successfully!", header.Filename)
+	return c.String(http.StatusOK, fmt.Sprintf("%s uploaded successfully!", header.Filename))
 }

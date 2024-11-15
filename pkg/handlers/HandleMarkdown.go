@@ -1,58 +1,38 @@
 package handlers
 
 import (
-	"bytes"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/yuin/goldmark"
+	"github.com/labstack/echo/v4"
 )
 
-// markdownHandler reads a markdown file and renders it as HTML.
-func HandleMarkdown(w http.ResponseWriter, r *http.Request) {
+func HandleMarkdown(c echo.Context) error {
 	rootDir := os.Getenv("ROOT_DIR")
 	if rootDir == "" {
-		http.Error(w, "Root directory not set", http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, "Root directory not set")
 	}
 
-	file := r.URL.Query().Get("file")
+	file := c.QueryParam("file")
 	if file == "" {
-		http.Error(w, "File parameter is missing", http.StatusBadRequest)
-		return
+		return c.JSON(http.StatusBadRequest, "File parameter is missing")
 	}
 
 	// clean and construct the full file path
 	filePath := filepath.Join(rootDir, filepath.Clean(file))
 	if !strings.HasPrefix(filepath.Clean(filePath), filepath.Clean(rootDir)) {
-		http.Error(w, "Invalid file path", http.StatusBadRequest)
-		return
+		return c.JSON(http.StatusBadRequest, "Invalid file path")
 	}
 
 	// read markdown file
 	mdContent, err := os.ReadFile(filePath)
 	if err != nil {
-		http.Error(w, "Failed to read file", http.StatusInternalServerError)
 		log.Println(err)
-		return
+		return c.JSON(http.StatusInternalServerError, "Failed to read file")
 	}
 
-	// convert markdown content to HTML
-	var buf bytes.Buffer
-	markdown := goldmark.New()
-	if err := markdown.Convert(mdContent, &buf); err != nil {
-		http.Error(w, "Failed to convert markdown", http.StatusInternalServerError)
-		return
-	}
-
-	// set response headers and write HTML content
-	w.Header().Set("Content-Type", "text/html")
-	_, err = w.Write(buf.Bytes())
-	if err != nil {
-		http.Error(w, "Error writing HTML content", http.StatusInternalServerError)
-		return
-	}
+	return c.JSON(http.StatusOK, mdContent)
 }

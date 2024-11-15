@@ -1,1 +1,3 @@
-# example md 2!
+# example 2
+
+- this is the second *sample* markdown file!

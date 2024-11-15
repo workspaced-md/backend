@@ -31,6 +31,13 @@ func HandleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
+	// read target directory from the form
+	targetDir := r.FormValue("targetDir")
+	if targetDir == "" {
+		http.Error(w, "Target directory not provided", http.StatusBadRequest)
+		return
+	}
+
 	// get root directory from .env
 	rootDir := os.Getenv("ROOT_DIR")
 	if rootDir == "" {
@@ -39,7 +46,7 @@ func HandleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// create destination file path
-	dstPath := filepath.Join(rootDir, header.Filename)
+	dstPath := filepath.Join(rootDir, targetDir, header.Filename)
 	dstFile, err := os.Create(dstPath)
 	if err != nil {
 		http.Error(w, "Failer to create file", http.StatusInternalServerError)

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -48,6 +47,5 @@ func HandleMarkdown(c echo.Context) error {
 		Content: string(mdContent),
 	}
 
-	fmt.Println(mdContent)
 	return c.JSON(http.StatusOK, md)
 }

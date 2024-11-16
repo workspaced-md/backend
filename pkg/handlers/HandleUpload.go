@@ -56,5 +56,6 @@ func HandleUpload(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Failed to save file")
 	}
 
+	c.Response().Header().Set("Content-Type", "text/plain")
 	return c.String(http.StatusOK, "File uploaded successfully")
 }

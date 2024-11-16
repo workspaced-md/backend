@@ -2,8 +2,12 @@
 
 - [ ] style rendered markdown
 - [ ] users
+    - [ ] registration
+        - [ ] email/user/pass
+        - [ ] oauth
+    - [ ] login
     - [ ] directory ownership for users
-    - [ ] drop down menu to select a dir for which a user has access
+    - [ ] drop down menu to select from a user's directories
 
 # IN PROGRESS
 

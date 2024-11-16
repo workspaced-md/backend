@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>View Markdown</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <h1>View Markdown</h1>
+
+    <form id="markdownForm">
+      <label for="file">Markdown File Name:</label>
+      <input type="text" id="file" name="file" value="example.md" required />
+      <button type="submit">Fetch Markdown</button>
+    </form>
+
+    <div id="content"></div>
+
+    <script>
+      const form = document.getElementById("markdownForm");
+      const contentDiv = document.getElementById("content");
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault(); // prevent default form submission
+
+        const formData = new FormData(form);
+        const file = formData.get("file");
+
+        fetch(`http://localhost:8080/?file=${encodeURIComponent(file)}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+          })
+          .then((markdown) => {
+            // render html markdown
+            contentDiv.innerHTML = marked(markdown);
+          })
+          .catch((error) => {
+            console.error(
+              "There has been a problem with your fetch operation:",
+              error,
+            );
+            contentDiv.innerHTML = `<p style="color: red;">Error fetching markdown: ${error}</p>`;
+          });
+      });
+    </script>
+  </body>
+</html>

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -47,7 +46,7 @@ func HandleUpload(c echo.Context) error {
 	dstFile, err := os.Create(dstPath)
 	if err != nil {
 		log.Println(err)
-		return c.String(http.StatusInternalServerError, "Failed to create file")
+		return c.String(http.StatusInternalServerError, "Failed to create file, possibly an invalid path")
 	}
 	defer dstFile.Close()
 
@@ -57,5 +56,5 @@ func HandleUpload(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Failed to save file")
 	}
 
-	return c.String(http.StatusOK, fmt.Sprintf("%s uploaded successfully!", header.Filename))
+	return c.String(http.StatusOK, "File uploaded successfully")
 }

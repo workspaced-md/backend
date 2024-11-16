@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,6 +10,10 @@ import (
 
 	"github.com/labstack/echo/v4"
 )
+
+type markdown struct {
+	Content string `json:"content"`
+}
 
 func HandleMarkdown(c echo.Context) error {
 	rootDir := os.Getenv("ROOT_DIR")
@@ -27,12 +32,22 @@ func HandleMarkdown(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, "Invalid file path")
 	}
 
+	// ensure only .md files are served
+	if filepath.Ext(filePath) != ".md" {
+		return c.JSON(http.StatusBadRequest, "Invalid file type")
+	}
+
 	// read markdown file
 	mdContent, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Println(err)
-		return c.JSON(http.StatusInternalServerError, "Failed to read file")
+		return c.JSON(http.StatusInternalServerError, "Failed to read file - does it exist?")
 	}
 
-	return c.JSON(http.StatusOK, mdContent)
+	md := markdown{
+		Content: string(mdContent),
+	}
+
+	fmt.Println(mdContent)
+	return c.JSON(http.StatusOK, md)
 }

@@ -26,9 +26,6 @@ func main() {
 
 	e := echo.New()
  	e.Static("/", "static")
-	e.GET("/", func(c echo.Context) error {
-		return c.File("./static/src/index.html")
-	}, cors)
 	e.POST("/upload", handlers.HandleUpload, cors)
 	e.GET("/markdown", handlers.HandleMarkdown, cors)
 	e.Logger.Fatal(e.Start(":8080"))

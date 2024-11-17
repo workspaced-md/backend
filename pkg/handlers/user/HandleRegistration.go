@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/arnavsurve/md/pkg/db"
-	"github.com/arnavsurve/md/pkg/shared"
+	"github.com/arnavsurve/workspaced/pkg/db"
+	"github.com/arnavsurve/workspaced/pkg/shared"
 	"github.com/labstack/echo/v4"
 )
 
@@ -13,14 +13,15 @@ func HandleNewUser(c echo.Context, store *db.Store) error {
 	account := shared.Account{}
 	err := c.Bind(&account)
 	if err != nil {
-		return err
+		log.Println(err)
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Failed to create user: " + err.Error()})
 	}
 
 	err = store.CreateAccount(&account)
 	if err != nil {
 		log.Println(err)
-		return c.String(http.StatusInternalServerError, "Failed to create account")
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to create user: " + err.Error()})
 	}
-	
-	return c.String(http.StatusOK, "Account created successfully")
+
+	return c.JSON(http.StatusOK, map[string]string{"message": "User created successfully"})
 }

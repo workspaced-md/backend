@@ -2,10 +2,9 @@ package user
 
 import (
 	"net/http"
-
 	"strconv"
 
-	"github.com/arnavsurve/md/pkg/db"
+	"github.com/arnavsurve/workspaced/pkg/db"
 	"github.com/labstack/echo/v4"
 )
 
@@ -21,3 +20,4 @@ func HandleGetUserById(c echo.Context, store *db.Store) error {
 	}
 	return c.JSON(http.StatusOK, account)
 }
+

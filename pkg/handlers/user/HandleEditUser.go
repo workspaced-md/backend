@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/arnavsurve/md/pkg/db"
-	"github.com/arnavsurve/md/pkg/shared"
+	"github.com/arnavsurve/workspaced/pkg/db"
+	"github.com/arnavsurve/workspaced/pkg/shared"
 	"github.com/labstack/echo/v4"
 )
 
@@ -21,6 +21,7 @@ func HandleEditUser(c echo.Context, store *db.Store) error {
 		log.Println(err)
 		return c.String(http.StatusInternalServerError, "Failed to edit account")
 	}
-	
+
 	return c.String(http.StatusOK, "Account edited successfully")
 }
+

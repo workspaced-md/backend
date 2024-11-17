@@ -17,30 +17,30 @@ type markdown struct {
 func HandleMarkdown(c echo.Context) error {
 	rootDir := os.Getenv("ROOT_DIR")
 	if rootDir == "" {
-		return c.JSON(http.StatusInternalServerError, "Root directory not set")
+		return c.String(http.StatusInternalServerError, "Root directory not set")
 	}
 
 	file := c.QueryParam("file")
 	if file == "" {
-		return c.JSON(http.StatusBadRequest, "File parameter is missing")
+		return c.String(http.StatusBadRequest, "File parameter is missing")
 	}
 
 	// clean and construct the full file path
 	filePath := filepath.Join(rootDir, filepath.Clean(file))
 	if !strings.HasPrefix(filepath.Clean(filePath), filepath.Clean(rootDir)) {
-		return c.JSON(http.StatusBadRequest, "Invalid file path")
+		return c.String(http.StatusBadRequest, "Invalid file path")
 	}
 
 	// ensure only .md files are served
 	if filepath.Ext(filePath) != ".md" {
-		return c.JSON(http.StatusBadRequest, "Invalid file type")
+		return c.String(http.StatusBadRequest, "Invalid file type")
 	}
 
 	// read markdown file
 	mdContent, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Println(err)
-		return c.JSON(http.StatusInternalServerError, "Failed to read file - does it exist?")
+		return c.String(http.StatusInternalServerError, "Failed to read file - does it exist?")
 	}
 
 	md := markdown{

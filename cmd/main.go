@@ -52,7 +52,9 @@ func main() {
 	userGroup.PUT("/:id", func(c echo.Context) error {
 		return user.HandleEditUser(c, store)
 	})
-	// TODO /user/login
+	userGroup.POST("/login", func(c echo.Context) error {
+		return user.HandleLogin(c, store)
+	})
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

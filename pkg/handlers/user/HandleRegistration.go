@@ -29,6 +29,7 @@ func HandleNewUser(c echo.Context, store *db.Store) error {
 	// Create a new account
 	account = &shared.Account{
 		Email:    req.Email,
+		Username: req.Username,
 		Password: req.Password,
 	}
 

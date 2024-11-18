@@ -1,19 +1,21 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
 
-	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
+	"github.com/arnavsurve/workspaced/pkg/shared"
 	"github.com/joho/godotenv"
 )
 
 type Store struct {
-	DB *sql.DB
+	DB *gorm.DB
 }
 
 func NewStore() (*Store, error) {
@@ -28,12 +30,10 @@ func NewStore() (*Store, error) {
 	password := os.Getenv("DB_PASS")
 
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", user, password, host, port, dbname)
-	db, err := sql.Open("postgres", connStr)
+	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
-		return nil, err
-	}
-
-	if err := db.Ping(); err != nil {
 		return nil, err
 	}
 
@@ -45,14 +45,8 @@ func NewStore() (*Store, error) {
 }
 
 func (s *Store) InitAccountsTable() {
-	_, err := s.DB.Exec(`CREATE TABLE IF NOT EXISTS accounts (
-		id SERIAL PRIMARY KEY,
-		email TEXT NOT NULL,
-		username TEXT NOT NULL,
-		password TEXT NOT NULL,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	)`)
+	err := s.DB.AutoMigrate(&shared.Account{})
 	if err != nil {
-		log.Fatalf("Error creating accounts table", err)
+		log.Fatalf("Error creating accounts table: %v", err)
 	}
 }

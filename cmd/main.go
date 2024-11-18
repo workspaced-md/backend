@@ -26,7 +26,6 @@ func main() {
 		AllowHeaders: []string{echo.HeaderContentType, echo.HeaderAuthorization},
 	}))
 
-	e.Static("/", "static")
 	e.POST("/upload", handlers.HandleUpload)
 	e.GET("/markdown", handlers.HandleMarkdown)
 
@@ -36,7 +35,6 @@ func main() {
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
 		AllowHeaders: []string{echo.HeaderContentType, echo.HeaderAuthorization},
 	}))
-
 	userGroup.POST("/register", func(c echo.Context) error {
 		return user.HandleNewUser(c, store)
 	})

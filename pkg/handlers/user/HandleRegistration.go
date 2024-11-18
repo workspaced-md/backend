@@ -10,8 +10,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type requestData struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func HandleNewUser(c echo.Context, store *db.Store) error {
+	if c.Bind(&requestData{}) != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Failed to read body"})
+	}
+
+	// look up requested user
 	account := shared.Account{}
+	store.DB.Query("SELECT * FROM accounts WHERE email = $1", requestData.Email).Scan(&account)
+
 	err := c.Bind(&account)
 	if err != nil {
 		log.Println(err)

@@ -5,7 +5,7 @@ import (
 )
 
 type Account struct {
-	ID int
+	ID int `gorm:"primaryKey"`
 	Email string `json:"email"`
 	Username string `json:"username"`
 	Password string `json:"password"`

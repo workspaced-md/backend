@@ -24,4 +24,3 @@ func HandleEditUser(c echo.Context, store *db.Store) error {
 
 	return c.String(http.StatusOK, "Account edited successfully")
 }
-

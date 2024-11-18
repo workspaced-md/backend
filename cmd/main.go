@@ -49,6 +49,7 @@ func main() {
 	userGroup.PUT("/:id", func(c echo.Context) error {
 		return user.HandleEditUser(c, store)
 	})
+	// TODO /user/login
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

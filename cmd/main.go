@@ -6,11 +6,16 @@ import (
 	"github.com/arnavsurve/workspaced/pkg/db"
 	"github.com/arnavsurve/workspaced/pkg/handlers"
 	"github.com/arnavsurve/workspaced/pkg/handlers/user"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Printf("error %s", err)
+	}
+
 	store, err := db.NewStore()
 	if err != nil {
 		log.Fatal(err)

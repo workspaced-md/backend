@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/arnavsurve/workspaced/pkg/auth"
 	"github.com/arnavsurve/workspaced/pkg/db"
 	"github.com/arnavsurve/workspaced/pkg/shared"
 	"github.com/labstack/echo/v4"
@@ -29,7 +30,7 @@ func HandleLogin(c echo.Context, store *db.Store) error {
 	}
 
 	// Generate JWT
-	token, err := GenerateJWT(account)
+	token, err := auth.GenerateJWT(account)
 	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to log in"})

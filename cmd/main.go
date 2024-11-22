@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/arnavsurve/workspaced/pkg/auth"
 	"github.com/arnavsurve/workspaced/pkg/db"
 	"github.com/arnavsurve/workspaced/pkg/handlers"
 	"github.com/arnavsurve/workspaced/pkg/handlers/user"
@@ -34,6 +35,7 @@ func main() {
 	// Unprotected routes
 	e.POST("/upload", handlers.HandleUpload)
 	e.GET("/markdown", handlers.HandleMarkdown)
+
 	userGroup := e.Group("/user")
 	userGroup.POST("/login", func(c echo.Context) error {
 		return user.HandleLogin(c, store)
@@ -41,12 +43,13 @@ func main() {
 	userGroup.POST("/register", func(c echo.Context) error {
 		return user.HandleNewUser(c, store)
 	})
+
 	// userGroup.GET("/:email", func(c echo.Context) error {
 	// 	return user.HandleGetUserByEmail(c, store)
 	// })
 
 	// Protected routes
-	protected := e.Group("/protected")
+	protected := e.Group("/protected", auth.JWTMiddleware())
 	userProtected := protected.Group("/user")
 	userProtected.GET("/:id", func(c echo.Context) error {
 		return user.HandleGetUserById(c, store)

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/arnavsurve/workspaced/pkg/auth"
 	"github.com/arnavsurve/workspaced/pkg/db"
 	"github.com/arnavsurve/workspaced/pkg/shared"
 	"github.com/labstack/echo/v4"
@@ -45,7 +46,7 @@ func HandleNewUser(c echo.Context, store *db.Store) error {
 	}
 
 	// Generate JWT
-	token, err := GenerateJWT(account)
+	token, err := auth.GenerateJWT(account)
 	if err != nil {
 		log.Println(err)
 		return c.JSON(http.StatusBadRequest, map[string]string{"message": "Failed to create user"})

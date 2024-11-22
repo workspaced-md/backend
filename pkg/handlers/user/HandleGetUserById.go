@@ -30,6 +30,7 @@ func HandleGetUserById(c echo.Context, store *db.Store) error {
 
 	// Fetch user account from database
 	account, err := store.GetAccountById(intId)
+	account.Password = ""
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}

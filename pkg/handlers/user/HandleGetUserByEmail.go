@@ -14,10 +14,10 @@ func HandleGetUserByEmail(c echo.Context, store *db.Store) error {
 	}
 
 	account, err := store.GetAccountByEmail(email)
+	account.Password = ""
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": "Failed to get user: " + err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, account)
 }
-

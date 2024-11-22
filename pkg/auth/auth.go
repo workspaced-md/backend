@@ -30,7 +30,7 @@ func JWTMiddleware() echo.MiddlewareFunc {
 
 func GenerateJWT(account *shared.Account) (string, error) {
 	claims := JwtClaims{
-		UserId:   account.ID,
+		UserId:   account.Id,
 		Username: account.Username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),

@@ -15,7 +15,7 @@ func (s *Store) CreateAccount(account *shared.Account) error {
 }
 
 func (s *Store) EditAccount(account *shared.Account) error {
-	result := s.DB.Model(&shared.Account{}).Where("id = ?", account.ID).Updates(account)
+	result := s.DB.Model(&shared.Account{}).Where("id = ?", account.Id).Updates(account)
 	if result.Error != nil {
 		return fmt.Errorf("error updating account: %v", result.Error)
 	}
@@ -39,4 +39,3 @@ func (s *Store) GetAccountByEmail(email string) (*shared.Account, error) {
 	}
 	return account, nil
 }
-

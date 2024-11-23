@@ -7,6 +7,7 @@ import (
 	"github.com/arnavsurve/workspaced/pkg/db"
 	"github.com/arnavsurve/workspaced/pkg/handlers"
 	"github.com/arnavsurve/workspaced/pkg/handlers/user"
+	"github.com/arnavsurve/workspaced/pkg/handlers/workspace"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -23,6 +24,7 @@ func main() {
 	}
 
 	store.InitAccountsTable()
+	store.InitWorkspacesTable()
 
 	e := echo.New()
 
@@ -50,12 +52,27 @@ func main() {
 
 	// Protected routes
 	protected := e.Group("/protected", auth.JWTMiddleware())
+
 	userProtected := protected.Group("/user")
 	userProtected.GET("/:id", func(c echo.Context) error {
 		return user.HandleGetUserById(c, store)
 	})
 	userProtected.PUT("/:id", func(c echo.Context) error {
 		return user.HandleEditUser(c, store)
+	})
+
+	workspaceProtected := protected.Group("/workspace")
+	workspaceProtected.POST("", func(c echo.Context) error {
+		return workspace.HandleCreateWorkspace(c, store)
+	})
+	workspaceProtected.GET("/:id", func(c echo.Context) error {
+		return workspace.HandleGetWorkspaceById(c, store)
+	})
+	workspaceProtected.GET("/all/:id", func(c echo.Context) error {
+		return workspace.HandleGetWorkspacesByAccountId(c, store)
+	})
+	workspaceProtected.PUT("/:workspaceId", func(c echo.Context) error {
+		return workspace.HandleEditWorkspace(c, store)
 	})
 
 	e.Logger.Fatal(e.Start(":8080"))

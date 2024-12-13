@@ -32,9 +32,16 @@ func main() {
 		AllowHeaders: []string{echo.HeaderContentType, echo.HeaderAuthorization},
 	}))
 
+	auth.InitGoogleAuth()
+
 	// Unprotected routes
 	e.POST("/upload", handlers.HandleUpload)
 	e.GET("/markdown", handlers.HandleMarkdown)
+
+	e.GET("/auth/google/login", auth.HandleGoogleLogin)
+	e.GET("/api/auth/callback", func(c echo.Context) error {
+		return auth.HandleGoogleCallback(c, store)
+	})
 
 	userGroup := e.Group("/user")
 	userGroup.POST("/login", func(c echo.Context) error {
